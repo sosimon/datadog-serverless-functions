@@ -481,7 +481,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketEncryption:
-          ServerSideEncryptionConfiguration:
+        ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
       PublicAccessBlockConfiguration:
@@ -546,10 +546,10 @@ Resources:
                 key = '/'.join(parts[1:])
                 response = s3.get_object(Bucket=bucket, Key=key)
                 data = response["Body"]
-                s3.upload_fileobj(data, dest_zips_bucket, filename)
+                s3.upload_fileobj(data, dest_zips_bucket, filename, extra_args={'ServerSideEncryption': "AES256"})
             else:
                 with urllib.request.urlopen(source_zip_url) as data:
-                    s3.upload_fileobj(data, dest_zips_bucket, filename)
+                    s3.upload_fileobj(data, dest_zips_bucket, filename, extra_args={'ServerSideEncryption': "AES256"})
         def timeout(event, context):
             logging.error('Execution is about to time out, sending failure response to CloudFormation')
             send_cfn_resp(event, context, 'FAILED')
